@@ -20,7 +20,7 @@ type Endpoint struct {
 type Route struct {
 	Name     string   `json:"name"`
 	Upstream Upstream `json:"upstream"`
-	Match    Match    `json:match`
+	Match    Match    `json:"match"`
 }
 
 type Upstream struct {

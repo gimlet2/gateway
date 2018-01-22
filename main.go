@@ -12,7 +12,7 @@ func main() {
 
 	log.Print("Start Server")
 	conf := config.Load(os.Getenv("config"))
-	http.HandleFunc("/config" func(w http.ResponseWriter, r *http.Request) {
+	http.HandleFunc("/config", func(w http.ResponseWriter, r *http.Request) {
 		j, _ := json.Marshal(conf)
 		w.Write(j)
 	})
