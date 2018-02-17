@@ -1,0 +1,22 @@
+{
+  "path": "/v1",
+  "endpoints": [
+    {
+      "name": "test1",
+      "path": "/test",
+      "sticky": false,
+      "methods": [],
+      "routes": [
+        {
+          "name": "main",
+          "upstream": {
+            "uri": "http://localhost:8081/test"
+          },
+          "match": {
+            "query": { "a": ["1"] }
+          }
+        }
+      ]
+    }
+  ]
+}
