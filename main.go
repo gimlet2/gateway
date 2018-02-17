@@ -20,15 +20,15 @@ func main() {
 		w.Write(j)
 	})
 	for _, endpoint := range conf.Endpoints {
-		http.HandleFunc(endpoint.GetPath(), func(w http.ResponseWriter, r *http.Request) {
+		http.HandleFunc(conf.Path+endpoint.GetPath(), func(w http.ResponseWriter, r *http.Request) {
 			if len(endpoint.Methods) != 0 && !utils.Contains(endpoint.Methods, r.Method) {
 				writeErrorWithCode(w, http.StatusMethodNotAllowed, "Method is not allowed")
 				return
 			}
 			for _, route := range endpoint.Routes {
 				if route.Matching(r) {
-					route.Upstream.Forward(w, r);
-					break;
+					route.Upstream.Forward(w, r)
+					break
 				}
 			}
 
