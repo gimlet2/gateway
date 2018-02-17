@@ -1,5 +1,10 @@
 package utils
 
+import (
+	"fmt"
+	"net/http"
+)
+
 func Contains(slice []string, val string) bool {
 	for _, v := range slice {
 		if v == val {
@@ -34,4 +39,13 @@ func ContainsOne(slice []string, vals []string) bool {
 		}
 	}
 	return false
+}
+
+func WriteError(w http.ResponseWriter, message string) {
+	w.Write([]byte(fmt.Sprintf("{\"error\":\"%s\"}", message)))
+}
+
+func WriteErrorWithCode(w http.ResponseWriter, code int, message string) {
+	w.WriteHeader(code)
+	w.Write([]byte(fmt.Sprintf("{\"error\":\"%s\"}", message)))
 }

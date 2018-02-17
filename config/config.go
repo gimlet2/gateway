@@ -35,12 +35,18 @@ type Route struct {
 	Match    Match    `json:"match"`
 }
 
-func (route Route) Matching(r *http.Request) bool {
-	return route.Match.Matching(r)
-}
-
 type Upstream struct {
 	Uri string `json:"uri"`
+}
+
+type Match struct {
+	Headers map[string][]string `json:"headers,omitempty"`
+	Query   map[string][]string `json:"query,omitempty"`
+	Json    map[string][]string `json:"json,omitempty"`
+}
+
+func (route Route) Matching(r *http.Request) bool {
+	return route.Match.Matching(r)
 }
 
 func (u Upstream) Forward(w http.ResponseWriter, r *http.Request) {
@@ -48,7 +54,8 @@ func (u Upstream) Forward(w http.ResponseWriter, r *http.Request) {
 	var newRequest, _ = http.NewRequest(r.Method, u.Uri, r.Body)
 	resp, e := client.Do(newRequest)
 	if e != nil {
-		log.Printf("Error %e", e)
+		log.Printf("Failed to make upstream request %e", e)
+		utils.WriteErrorWithCode(w, 500, "Failed to make upstream request")
 	}
 	w.WriteHeader(resp.StatusCode)
 
@@ -57,15 +64,13 @@ func (u Upstream) Forward(w http.ResponseWriter, r *http.Request) {
 			w.Header().Add(n, s)
 		}
 	}
-	buff, _ := ioutil.ReadAll(resp.Body)
+	buff, e := ioutil.ReadAll(resp.Body)
+	if e != nil {
+		log.Printf("Failed to make upstream request %e", e)
+		utils.WriteErrorWithCode(w, 500, "Failed to make upstream request")
+	}
 	w.Write(buff)
 
-}
-
-type Match struct {
-	Headers map[string][]string `json:"headers,omitempty"`
-	Query   map[string][]string `json:"query,omitempty"`
-	Json    map[string][]string `json:"json,omitempty"`
 }
 
 func (m Match) Matching(r *http.Request) bool {
