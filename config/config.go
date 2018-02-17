@@ -75,7 +75,6 @@ func (m Match) Matching(r *http.Request) bool {
 		}
 	}
 	for n, v := range m.Query {
-		log.Printf("key %s, v %s", n, v)
 		if !utils.ContainsOne(v, map[string][]string(r.URL.Query())[n]) {
 			return false
 		}
