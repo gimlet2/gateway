@@ -26,7 +26,7 @@ func main() {
 			}
 			for _, route := range endpoint.Routes {
 				if route.Matching(r) {
-					route.Upstream.Forward(w, r)
+					route.Drop().Forward(w, r)
 					break
 				}
 			}
@@ -46,6 +46,7 @@ func post(pattern string, handler func(w http.ResponseWriter, r *http.Request)) 
 		}
 	})
 }
+
 func get(pattern string, handler func(w http.ResponseWriter, r *http.Request)) {
 	http.HandleFunc(pattern, func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == "GET" {

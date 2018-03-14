@@ -9,9 +9,10 @@
       "routes": [
         {
           "name": "main",
-          "upstream": {
+          "upstream": [{
+            "weight": 1.0,
             "uri": "http://localhost:8081/test"
-          },
+          }],
           "match": {
             "query": { "a": ["1", "2"] },
             "headers": { "Accepted-Type": ["application/json"] }
