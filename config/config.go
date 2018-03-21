@@ -56,14 +56,15 @@ func (route Route) Drop() Upstream {
 	for _, u := range route.Upstream {
 		total += u.Weight
 	}
-	index := 0
 	r := rand.Float32()
-	for total >= r {
-		total -= r
+	for _, u := range route.Upstream {
+		if r <= u.Weight/total {
+			return u
+		}
 		r = rand.Float32()
-		index++
 	}
-	return route.Upstream[index]
+
+	return route.Upstream[len(route.Upstream)-1]
 }
 
 func (u Upstream) Forward(w http.ResponseWriter, r *http.Request) {
